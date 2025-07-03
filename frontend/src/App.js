@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCourseManager } from './hooks/useCourseManager';
+import CourseInputForm from "./components/CourseInputForm";
 import './App.css';
 
 
@@ -11,9 +12,12 @@ function App() {
   const { courses, addCourse, updateCourse, deleteCourse, editingCourse, setEditingCourse } = useCourseManager();
 
   return (
-    <div >
-     <h1>hello</h1>
-    </div>
+    <CourseInputForm
+      onAddCourse={addCourse}
+      onUpdateCourse={updateCourse}
+      editingCourse={editingCourse}
+      setEditingCourse={setEditingCourse}
+    />
   );
 }
 
