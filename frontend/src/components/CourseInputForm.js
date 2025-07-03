@@ -12,8 +12,56 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
         mandatory: false,
     })
 
+    useEffect(() => {
+        if (editingCourse) {
+            setFormData({
+                courseCode: editingCourse.courseCode,
+                startTime: editingCourse.startTime,
+                endTime: editingCourse.endTime,
+                section: editingCourse.section || "",
+                type: editingCourse.type || "",
+                instructor: editingCourse.instructor || "",
+                location: editingCourse.location || "",
+                mandatory: editingCourse.mandatory || false,
+            })
+        }
+    }, [editingCourse])
+
     const handleSubmit = (e) => {
         e.preventDefault()
+
+        if (!formData.courseCode || !formData.startTime || !formData.endTime) {
+            return
+        }
+
+        const courseData = {
+            courseCode : formData.courseCode,
+            startTime: formData.startTime,
+            endTime: formData.endTime,
+            section: formData.section || undefined,
+            type: formData.type || undefined,
+            instructor: formData.instructor || undefined,
+            location: formData.location || undefined,
+            mandatory: formData.mandatory,
+        }
+
+        if (editingCourse) {
+            onUpdateCourse(editingCourse.id, courseData)
+            setEditingCourse(null)
+        } else {
+            onAddCourse(courseData)
+        }
+
+        setFormData({
+            courseCode: "",
+            startTime: "",
+            endTime: "",
+            section: "",
+            type: "",
+            instructor: "",
+            location: "",
+            mandatory: false,
+        })
     }
 
     const handleCancel = () => {
