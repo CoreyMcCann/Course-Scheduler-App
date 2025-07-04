@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useCourseManager } from './hooks/useCourseManager';
 import CourseInputForm from "./components/CourseInputForm";
+import CourseSelectionForm from "./components/CourseSelectionForm";
 import './App.css';
 
 
@@ -12,12 +13,23 @@ function App() {
   const { courses, addCourse, updateCourse, deleteCourse, editingCourse, setEditingCourse } = useCourseManager();
 
   return (
-    <CourseInputForm
-      onAddCourse={addCourse}
-      onUpdateCourse={updateCourse}
-      editingCourse={editingCourse}
-      setEditingCourse={setEditingCourse}
-    />
+    <div className="app">
+      <main className="main-content">
+        <CourseSelectionForm 
+          selectedTerm={selectedTerm}
+          setSelectedTerm={setSelectedTerm}
+          courseCount={courseCount}
+          setCourseCount={setCourseCount}
+        />
+
+        <CourseInputForm
+          onAddCourse={addCourse}
+          onUpdateCourse={updateCourse}
+          editingCourse={editingCourse}
+          setEditingCourse={setEditingCourse}
+        />
+      </main>
+    </div> 
   );
 }
 
