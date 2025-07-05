@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useCourseManager } from './hooks/useCourseManager';
 import CourseInputForm from "./components/CourseInputForm";
 import CourseSelectionForm from "./components/CourseSelectionForm";
+import CourseList from "./components/CourseList";
 import './App.css';
 
 
@@ -28,6 +29,13 @@ function App() {
           editingCourse={editingCourse}
           setEditingCourse={setEditingCourse}
         />
+
+        <CourseList 
+          courses={courses}
+          onEditCourse={setEditingCourse}
+          onDeleteCourse={deleteCourse}        
+        />
+
       </main>
     </div> 
   );
