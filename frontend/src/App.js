@@ -3,6 +3,7 @@ import { useCourseManager } from './hooks/useCourseManager';
 import CourseInputForm from "./components/CourseInputForm";
 import CourseSelectionForm from "./components/CourseSelectionForm";
 import CourseList from "./components/CourseList";
+import { generateSchedules } from "./utils/api"
 import './App.css';
 
 
