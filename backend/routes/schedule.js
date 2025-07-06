@@ -5,13 +5,13 @@ const router = express.Router()
 
 router.post("/", async (req, res) => {
     try {
-        const { courses, term } = req.body
+        const { courses, desiredCourseCount, term } = req.body
 
         if (!courses || !Array.isArray(courses)) {
             return res.status(400).json({ error : "Invalid courses data"})
         }
 
-        // will generate schedules here a feed them into the response
+        // will generate schedules here and feed them into the response
 
     } catch (error) {
         console.error("error generating schedules: ", error)
