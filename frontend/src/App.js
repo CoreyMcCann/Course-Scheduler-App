@@ -3,7 +3,8 @@ import { useCourseManager } from './hooks/useCourseManager';
 import CourseInputForm from "./components/CourseInputForm";
 import CourseSelectionForm from "./components/CourseSelectionForm";
 import CourseList from "./components/CourseList";
-import { generateSchedules } from "./utils/api"
+import { generateSchedules } from "./utils/api";
+import GenerateSchedulesButton from "./components/GenerateSchedulesButton";
 import './App.css';
 
 
@@ -53,6 +54,15 @@ function App() {
           onEditCourse={setEditingCourse}
           onDeleteCourse={deleteCourse}        
         />
+
+        {courses.length >= courseCount && (
+          <GenerateSchedulesButton 
+            onGenerate={handleGenerateSchedules}
+            isGenerating={isGenerating}
+            courseCount={courseCount}
+            totalCourses={courses.length}
+          />
+        )}
 
       </main>
     </div> 
