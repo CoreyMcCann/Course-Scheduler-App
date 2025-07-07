@@ -11,8 +11,25 @@ function App() {
   const [selectedTerm, setSelectedTerm] = useState("Fall");
   const [courseCount, setCourseCount] = useState(5);
   const [schedules, setSchedules] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const { courses, addCourse, updateCourse, deleteCourse, editingCourse, setEditingCourse } = useCourseManager();
+
+  const handleGenerateSchedules = async () => {
+    if (courses.length < courseCount) return
+
+    setIsGenerating(true)
+    try {
+      const data = await generateSchedules(courses, courseCount, selectedTerm)
+      setSchedules(data.schedules)
+
+      // eventually I will track analytics here
+    } catch (error) {
+      console.error("Error generating schedules: ", error)
+    } finally {
+      setIsGenerating(false)
+    }
+  }
 
   return (
     <div className="app">
