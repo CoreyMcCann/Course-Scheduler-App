@@ -5,6 +5,7 @@ import CourseSelectionForm from "./components/CourseSelectionForm";
 import CourseList from "./components/CourseList";
 import { generateSchedules } from "./utils/api";
 import GenerateSchedulesButton from "./components/GenerateSchedulesButton";
+import ScheduleViewer from "./components/ScheduleViewer";
 import './App.css';
 
 
@@ -13,6 +14,7 @@ function App() {
   const [courseCount, setCourseCount] = useState(5);
   const [schedules, setSchedules] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [favoriteSchedules, setFavoriteSchedules] = useState(new Set())
 
   const { courses, addCourse, updateCourse, deleteCourse, editingCourse, setEditingCourse } = useCourseManager();
 
@@ -30,6 +32,16 @@ function App() {
     } finally {
       setIsGenerating(false)
     }
+  }
+
+  const toggleFavorite = (scheduleIndex) => {
+    const newFavorites = new Set(favoriteSchedules)
+    if (newFavorites.has(scheduleIndex)) {
+      newFavorites.delete(scheduleIndex)
+    } else {
+      newFavorites.add(scheduleIndex)
+    }
+    setFavoriteSchedules(newFavorites)
   }
 
   return (
@@ -61,6 +73,17 @@ function App() {
             isGenerating={isGenerating}
             courseCount={courseCount}
             totalCourses={courses.length}
+          />
+        )}
+
+        {schedules.length > 0 && (
+          <ScheduleViewer 
+            schedules={schedules}
+            favoriteSchedules={favoriteSchedules}
+            onToggleFavorite={toggleFavorite}
+            onEmailSchedule={onEmailSchedule}
+            term={selectedTerm}
+            courseCount={courseCount}
           />
         )}
 
