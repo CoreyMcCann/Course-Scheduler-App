@@ -6,6 +6,7 @@ import CourseList from "./components/CourseList";
 import { generateSchedules } from "./utils/api";
 import GenerateSchedulesButton from "./components/GenerateSchedulesButton";
 import ScheduleViewer from "./components/ScheduleViewer";
+import EmailScheduleModal from "./components/EmailScheduleModal";
 import './App.css';
 
 
@@ -17,10 +18,8 @@ function App() {
   const [favoriteSchedules, setFavoriteSchedules] = useState(new Set());
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [selectedScheduleForEmail, setSelectedScheduleForEmail] = useState(null);
-  // the following is added
   const [error, setError] = useState(null);
   const [generationInfo, setGenerationInfo] = useState(null);
-  // end
 
   const { courses, addCourse, updateCourse, deleteCourse, editingCourse, setEditingCourse } = useCourseManager();
 
@@ -28,12 +27,11 @@ function App() {
     if (courses.length < courseCount) return
 
     setIsGenerating(true)
-    // the following is added
     setError(null)
     setSchedules([])
     setFavoriteSchedules(new Set())
     setGenerationInfo(null)
-    // end
+
     try {
       const data = await generateSchedules(courses, courseCount, selectedTerm)
       setSchedules(data.schedules)
@@ -44,15 +42,12 @@ function App() {
         courseCount,
         totalCourses: courses.length,
       })
-      // end
-
       // eventually I will track analytics here
 
     } catch (error) {
       console.error("Error generating schedules: ", error)
-      // the following is added
       setError(error.message || "Failed to generate schedules. Please try again.")
-      // end
+
     } finally {
       setIsGenerating(false)
     }
@@ -73,7 +68,6 @@ function App() {
     setShowEmailModal(true)
   }
 
-  // the following is added
   const handleAddCourse = (courseData) => {
     addCourse(courseData)
     setSchedules([])
@@ -97,7 +91,6 @@ function App() {
     setGenerationInfo(null)
     setFavoriteSchedules(new Set())
   }
-  // end
 
   return (
     <div className="app">
@@ -131,7 +124,6 @@ function App() {
           />
         )}
 
-        {/* the following is added */}
         {error && (
           <div className="card error-card">
             <div className="card-content">
@@ -176,7 +168,6 @@ function App() {
             </div>
           </div>
         )}
-        {/* end */}
 
         {schedules.length > 0 && (
           <ScheduleViewer 
@@ -187,6 +178,14 @@ function App() {
             term={selectedTerm}
             courseCount={courseCount}
             generationInfo={generationInfo}
+          />
+        )}
+
+        {showEmailModal && (
+          <EmailScheduleModal 
+            onClose={() => setShowEmailModal(false)}
+            schedule={selectedScheduleForEmail}
+            term={selectedTerm}
           />
         )}
 
