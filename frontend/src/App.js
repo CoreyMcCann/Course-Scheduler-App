@@ -14,7 +14,13 @@ function App() {
   const [courseCount, setCourseCount] = useState(5);
   const [schedules, setSchedules] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [favoriteSchedules, setFavoriteSchedules] = useState(new Set())
+  const [favoriteSchedules, setFavoriteSchedules] = useState(new Set());
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [selectedScheduleForEmail, setSelectedScheduleForEmail] = useState(null);
+  // the following is added
+  const [error, setError] = useState(null);
+  const [generationInfo, setGenerationInfo] = useState(null);
+  // end
 
   const { courses, addCourse, updateCourse, deleteCourse, editingCourse, setEditingCourse } = useCourseManager();
 
@@ -22,13 +28,31 @@ function App() {
     if (courses.length < courseCount) return
 
     setIsGenerating(true)
+    // the following is added
+    setError(null)
+    setSchedules([])
+    setFavoriteSchedules(new Set())
+    setGenerationInfo(null)
+    // end
     try {
       const data = await generateSchedules(courses, courseCount, selectedTerm)
       setSchedules(data.schedules)
+      // the following is added
+      setGenerationInfo({
+        totalGenerated: data.totalGenerated,
+        validCount: data.validCount,
+        courseCount,
+        totalCourses: courses.length,
+      })
+      // end
 
       // eventually I will track analytics here
+
     } catch (error) {
       console.error("Error generating schedules: ", error)
+      // the following is added
+      setError(error.message || "Failed to generate schedules. Please try again.")
+      // end
     } finally {
       setIsGenerating(false)
     }
@@ -44,6 +68,37 @@ function App() {
     setFavoriteSchedules(newFavorites)
   }
 
+  const handleEmailSchedule = (schedule, index) => {
+    setSelectedScheduleForEmail({ schedule, index})
+    setShowEmailModal(true)
+  }
+
+  // the following is added
+  const handleAddCourse = (courseData) => {
+    addCourse(courseData)
+    setSchedules([])
+    setError(null)
+    setGenerationInfo(null)
+    setFavoriteSchedules(new Set())
+  }
+
+  const handleUpdateCourse = (id, courseData) => {
+    updateCourse(id, courseData)
+    setSchedules([])
+    setError(null)
+    setGenerationInfo(null)
+    setFavoriteSchedules(new Set())
+  }
+
+  const handleDeleteCourse = (id) => {
+    deleteCourse(id)
+    setSchedules([])
+    setError(null)
+    setGenerationInfo(null)
+    setFavoriteSchedules(new Set())
+  }
+  // end
+
   return (
     <div className="app">
       <main className="main-content">
@@ -55,8 +110,8 @@ function App() {
         />
 
         <CourseInputForm
-          onAddCourse={addCourse}
-          onUpdateCourse={updateCourse}
+          onAddCourse={handleAddCourse}
+          onUpdateCourse={handleUpdateCourse}
           editingCourse={editingCourse}
           setEditingCourse={setEditingCourse}
         />
@@ -64,7 +119,7 @@ function App() {
         <CourseList 
           courses={courses}
           onEditCourse={setEditingCourse}
-          onDeleteCourse={deleteCourse}        
+          onDeleteCourse={handleDeleteCourse}        
         />
 
         {courses.length >= courseCount && (
@@ -76,14 +131,62 @@ function App() {
           />
         )}
 
+        {/* the following is added */}
+        {error && (
+          <div className="card error-card">
+            <div className="card-content">
+              <div className="error-content">
+                <h3 className="error-title">⚠️ Schedule Generation Failed</h3>
+                <p className="error-message">{error}</p>
+                <div className="error-suggestions">
+                  <p>
+                    <strong>Suggestions:</strong>
+                  </p>
+                  <ul>
+                    <li>Check for time conflicts between courses</li>
+                    <li>Ensure mandatory courses don't conflict with each other</li>
+                    <li>verify you have enough courses for the desired shedule size</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {generationInfo && schedules.length === 0 && !error && (
+          <div className="card info-card">
+            <div className="card-content">
+              <div className="info-content">
+                <h3 className="info-title">Generation Results</h3>
+                <p className="info-message">
+                  Generated {generationInfo.totalGenerated} possible {generationInfo.courseCount}-course
+                  combinations from {generationInfo.totalCourses} courses, but none were valid due to time conflicts
+                </p>
+                <div className="info-suggestions">
+                  <p>
+                    <strong>Try:</strong>
+                  </p>
+                  <ul>
+                    <li>Adjusting course times to avoid overlaps</li>
+                    <li>Removing conflicting courses</li>
+                    <li>Choosing a different number of courses per schedule</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* end */}
+
         {schedules.length > 0 && (
           <ScheduleViewer 
             schedules={schedules}
             favoriteSchedules={favoriteSchedules}
             onToggleFavorite={toggleFavorite}
-            onEmailSchedule={onEmailSchedule}
+            onEmailSchedule={handleEmailSchedule}
             term={selectedTerm}
             courseCount={courseCount}
+            generationInfo={generationInfo}
           />
         )}
 

@@ -32,8 +32,8 @@ function generateCombinations(courses, count) {
 }
 
 function validateSchedule(courses) {
-    for (let i = 0; i < len(courses); i++) {
-        for (let j = i + 1; j < len(courses); j++) {
+    for (let i = 0; i < courses.length; i++) {
+        for (let j = i + 1; j < courses.length; j++) {
             if (hasTimeConflict(courses[i], courses[j])) {
                 return false
             }
