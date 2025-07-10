@@ -7,6 +7,8 @@ import { generateSchedules } from "./utils/api";
 import GenerateSchedulesButton from "./components/GenerateSchedulesButton";
 import ScheduleViewer from "./components/ScheduleViewer";
 import EmailScheduleModal from "./components/EmailScheduleModal";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 import './App.css';
 
 
@@ -94,6 +96,8 @@ function App() {
 
   return (
     <div className="app">
+      <Header />
+
       <main className="main-content">
         <CourseSelectionForm 
           selectedTerm={selectedTerm}
@@ -190,6 +194,8 @@ function App() {
         )}
 
       </main>
+
+      <Footer /> 
     </div> 
   );
 }
