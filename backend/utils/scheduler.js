@@ -42,39 +42,75 @@ function validateSchedule(courses) {
     return true
 }
 
+function generateMandatoryGroupCombinations(mandatoryGroups) {
+    if (mandatoryGroups.length === 0) return [[]]
+
+    const [firstGroup, ...remainingGroups] = mandatoryGroups
+    const remainingCombinations = generateMandatoryGroupCombinations(remainingGroups)
+
+    const combinations = []
+
+    // for each course in the first group
+    for (const course of firstGroup) {
+        // combine with each combination from remaining Groups
+        for (const remainingCombination of remainingCombinations) {
+            combinations.push([course, ...remainingCombination])
+        }
+    }
+    return combinations
+}
+
 function generateSchedules(courses, desiredCourseCount, term) {
     const mandatoryCourses = courses.filter((course) => course.mandatory)
     const optionalCourses = courses.filter((course) => !course.mandatory)
 
+    // Group mandatory courses by course code 
+    const mandatoryGroups = {}
+    for (const course of mandatoryCourses) {
+        if (!mandatoryGroups[course.courseCode]) {
+            mandatoryGroups[course.courseCode] = []
+        }
+        mandatoryGroups[course.courseCode].push(course)
+    }
+
+    // convert to array of groups
+    const mandatoryGroupsArray = Object.values(mandatoryGroups)
+    const numMandatoryGroups = mandatoryGroupsArray.length
+
     // validate inputs
-    if (desiredCourseCount < mandatoryCourses.length) {
+    if (desiredCourseCount < numMandatoryGroups) {
         return {
            schedules: [],
            totalGenerated: 0,
            validCount: 0,
            error: `cannot create ${desiredCourseCount}-course schedules with 
-           ${mandatoryCourses.length} mandatory courses}`,
+           ${numMandatoryGroups} mandatory course groups}`,
         }
     }
 
     // I think this never happens because the "generate schedules" button will not appear
-    if (desiredCourseCount > courses.length) {
+    if (desiredCourseCount > numMandatoryGroups + optionalCourses.length) {
         return {
             schedules: [],
             totalGenerated: 0,
             validCount: 0,
             error: `cannot create ${desiredCourseCount}-course schedules from
-            only ${courses.length} available courses`,
+            only ${numMandatoryGroups} mandatory groups + ${optionalCourses.length} optional courses`,
         }
     }
 
-    // check if mandatory courses conflict with eachother
-    if (mandatoryCourses.length > 0 && !validateSchedule(mandatoryCourses)) {
+    // Generate all combinations of picking one course from each mandatory group
+    const mandatoryCombinations = generateMandatoryGroupCombinations(mandatoryGroupsArray)
+
+    // check if any valid mandatory combination exists
+    const validMandatoryCombinations = mandatoryCombinations.filter((combination) => validateSchedule(combination))
+
+    if (mandatoryCombinations.length > 0 && validMandatoryCombinations.length === 0) {
         return {
             schedules: [],
             totalGenerated: 0,
             validCount: 0,
-            error: "Mandatory courses have conflicts with each other",
+            error: "No valid combinations of mandatory courses exist - all combinations have time conflicts",
         }
     }
 
@@ -82,16 +118,19 @@ function generateSchedules(courses, desiredCourseCount, term) {
     let totalGenerated = 0
 
     // calculate how many optional courses we need 
-    const optionalCoursesNeeded = desiredCourseCount - mandatoryCourses.length
+    const optionalCoursesNeeded = desiredCourseCount - numMandatoryGroups
 
     if (optionalCoursesNeeded === 0) {
         // only mandatory courses needed 
-        totalGenerated = 1
-        validSchedules = [
-            {
-                courses: mandatoryCourses,
-            },
-        ]
+        totalGenerated = optionalCourses.length
+
+        for (const mandatoryCombination of mandatoryCombinations) {
+            if (validateSchedule(mandatoryCombination)) {
+                validSchedules.push({
+                    courses: mandatoryCombination,
+                })
+            }
+        }
     // this else if block may not be needed, isn't there always enough optional courses?
     } else if (optionalCoursesNeeded > optionalCourses.length) { 
         // not enough optional courses available
@@ -105,15 +144,22 @@ function generateSchedules(courses, desiredCourseCount, term) {
     } else {
         // generate combinations of optional courses
         const optionalCombinations = generateCombinations(optionalCourses, optionalCoursesNeeded)
-        totalGenerated = optionalCombinations.length
+        totalGenerated = mandatoryCombinations.legth * optionalCombinations.length
 
-        for (const optionalCombination of optionalCombinations) {
-            // combine mandatory courses with this optional courses combination
-            fullSchedule = [...mandatoryCourses, ...optionalCombination]
+        for (const mandatoryCombination of mandatoryCombinations) {
+            // first check if the mandatory combinations itself is valid
+            if (!validateSchedule(mandatoryCombination)) {
+                continue // skip this mandatory combination entirely
+            }
 
-            // validate complete schedule
-            if (validateSchedule(fullSchedule)) {
-                validSchedules.push({ courses: fullSchedule, })
+            for (const optionalCombination of optionalCombinations) {
+                // combine mandatory courses with this optional combination
+                fullSchedule = [...mandatoryCombination, ...optionalCombination]
+    
+                // validate complete schedule
+                if (validateSchedule(fullSchedule)) {
+                    validSchedules.push({ courses: fullSchedule, })
+                }
             }
         }
     }
