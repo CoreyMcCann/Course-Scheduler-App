@@ -8,7 +8,7 @@ function CourseSelectionForm({ selectedTerm, setSelectedTerm, courseCount, setCo
                 </p>
             </div>
             <div className="card-content">
-                <div className="form-grid">
+                <div className="form-row">
                     <div className="form-group">
                         <label hmtlFor="term">Academic Term</label>
                         <select 

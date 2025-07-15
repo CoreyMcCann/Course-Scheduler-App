@@ -92,8 +92,8 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
             </div>
             <div className="card-content">
                 <form onSubmit={handleSubmit} className="course-form">
-                    <div className="form-grid-3">
 
+                    <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="courseCode">Course Code *</label>
                             <input 
@@ -106,7 +106,9 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
                                 className="input"
                             />   
                         </div>
+                    </div>
 
+                    <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="startTime">Start Time *</label>
                             <input 
@@ -130,7 +132,9 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
                                 className="input"
                             />  
                         </div>
+                    </div>
 
+                    <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="section">Section</label>
                             <input 
@@ -157,7 +161,9 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
                                 <option value="Lab">Lab</option>
                             </select>   
                         </div>
+                    </div>
 
+                    <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="instructor">Instructor</label>
                             <input 

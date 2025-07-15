@@ -1,4 +1,4 @@
-function GenerateSchedulesButton({ onGenerate, isGenerating, courseCount, totalCourses }) {
+function GenerateSchedulesButton({ onGenerate, isGenerating, courseCount, totalCourses, hasGeneratedSchedules }) {
     return (
         <div className="card">
             <div className="card-content generate-section">
@@ -15,6 +15,17 @@ function GenerateSchedulesButton({ onGenerate, isGenerating, courseCount, totalC
                     >
                         {isGenerating ? "⏳ Generating Schedules..." : `📅 Generate ${courseCount}-Course Schedules`}
                     </button>
+
+                    {(isGenerating || hasGeneratedSchedules) && (
+                        <div className="scroll-message">
+                            <p className="scroll-text">
+                                {isGenerating ? "⏳ Generating Schedules..." : "✅ Schedules generated!"}
+                            </p>
+                            <p className="scroll-instruction">
+                                "👇 Scroll down to view all generated schedules"
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

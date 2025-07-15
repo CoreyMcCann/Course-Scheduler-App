@@ -60,15 +60,39 @@ body {
 .main-content {
   flex: 1;
   padding: 2rem 0;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
   padding-left: 1rem;
   padding-right: 1rem;
 }
 
-.main-content > * + * {
-  margin-top: 2rem;
+/* Layout Grid */
+.layout-grid {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  align-items: start;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: sticky;
+  top: 2rem;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 400px;
+}
+
+.results-section {
+  width: 100%;
 }
 
 /* Cards */
@@ -96,6 +120,41 @@ body {
 
 .card-content {
   padding: 1.5rem;
+}
+
+/* Course List Card */
+.course-list-card {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-list-card .card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Empty State */
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-text {
+  color: #64748b;
+  font-size: 1rem;
 }
 
 /* Error and Info Cards */
@@ -201,10 +260,11 @@ body {
   gap: 1.5rem;
 }
 
-.form-grid-3 {
+.form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .form-group {
@@ -431,6 +491,39 @@ body {
   margin-bottom: 1.5rem;
 }
 
+/* Scroll Message */
+.scroll-message {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 0.5rem;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.scroll-text {
+  font-weight: 500;
+  color: #0369a1;
+  margin-bottom: 0.5rem;
+}
+
+.scroll-instruction {
+  font-size: 0.875rem;
+  color: #0284c7;
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Schedule Viewer */
 .schedule-header {
   display: flex;
@@ -601,6 +694,21 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .left-column {
+    position: static;
+  }
+
+  .main-content {
+    max-width: 1200px;
+  }
+}
+
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
@@ -609,7 +717,7 @@ body {
   }
 
   .form-grid,
-  .form-grid-3 {
+  .form-row {
     grid-template-columns: 1fr;
   }
 
@@ -639,5 +747,9 @@ body {
 
   .modal-footer {
     flex-direction: column;
+  }
+
+  .layout-grid {
+    grid-template-columns: 1fr;
   }
 }
