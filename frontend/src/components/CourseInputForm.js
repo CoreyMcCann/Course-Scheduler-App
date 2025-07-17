@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
 
+const DAYS_OF_WEEK = [
+    {value: "Mon", label: "Monday"},
+    {value: "Tue", label: "Tuesday"},
+    {value: "Wed", label: "Wednesday"},
+    {value: "Thu", label: "Thursday"},
+    {value: "Fri", label: "Friday"},
+]
+
 function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditingCourse }) {
     const [formData, setFormData] = useState({
         courseCode: "",
-        startTime: "",
-        endTime: "",
+        meetingTimes: [{ dayOfWeek: "Mon", startTime: "", endTime: "" }],
         section: "",
         type: "",
         instructor: "",
@@ -16,8 +23,7 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
         if (editingCourse) {
             setFormData({
                 courseCode: editingCourse.courseCode,
-                startTime: editingCourse.startTime,
-                endTime: editingCourse.endTime,
+                meetingTimes: editingCourse.meetingTimes || [{ dayOfWeek: "Mon", startTime: "", endTime: "" }],
                 section: editingCourse.section || "",
                 type: editingCourse.type || "",
                 instructor: editingCourse.instructor || "",
@@ -30,14 +36,13 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        if (!formData.courseCode || !formData.startTime || !formData.endTime) {
+        if (!formData.courseCode || formData.meetingTimes.some((mt) => !mt.startTime || !mt.endTime)) {
             return
         }
 
         const courseData = {
             courseCode : formData.courseCode,
-            startTime: formData.startTime,
-            endTime: formData.endTime,
+            meetingTimes: formData.meetingTimes,
             section: formData.section || undefined,
             type: formData.type || undefined,
             instructor: formData.instructor || undefined,
@@ -54,8 +59,7 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
 
         setFormData({
             courseCode: "",
-            startTime: "",
-            endTime: "",
+            meetingTimes: [{ dayOfWeek: "Mon", startTime: "", endTime: "" }],
             section: "",
             type: "",
             instructor: "",
@@ -68,8 +72,7 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
         setEditingCourse(null)
         setFormData({
             courseCode: "",
-            startTime: "",
-            endTime: "",
+            meetingTimes: [{ dayOfWeek: "Mon", startTime: "", endTime: "" }],
             section: "",
             type: "",
             instructor: "",
@@ -82,17 +85,35 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
         setFormData({ ...formData, [field] : value })
     }
 
+    const handleMeetingTimeChange = (index, field, value) => {
+        const newMeetingTimes = [...formData.meetingTimes]
+        newMeetingTimes[index] = { ...newMeetingTimes[index], [field]: value }
+        setFormData({ ...formData, meetingTimes: newMeetingTimes })
+    }
+
+    const addMeetingTime = () => {
+        setFormData({ ...formData, meetingTimes: [...formData.meetingTimes, { dayOfWeek: "Mon", startTime: "", endTime: "" }],
+        })
+    }
+
+    const removeMeetingTime = (index) => {
+        if (formData.meetingTimes.length > 1) {
+            const newMeetingTimes = formData.meetingTimes.filter((_, i) => i !== index)
+            setFormData({ ...formData, meetingTimes: newMeetingTimes })
+        }
+    }
+
     return (
-        <div className="cord">
+        <div className="card">
             <div className="card-header">
                 <h2 className="card-title">{editingCourse ? "Edit Course" : "Add Course"}</h2>
-                <p className="card-description">Enter the course details. Course code, 
-                    start time, and end time are required.
+                <p className="card-description">Enter the course details and meeting times.
+                    course code and at least one complete meeting time are required. 
                 </p>
             </div>
             <div className="card-content">
                 <form onSubmit={handleSubmit} className="course-form">
-
+                    {/* Course Code */}
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="courseCode">Course Code *</label>
@@ -108,32 +129,71 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
                         </div>
                     </div>
 
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label htmlFor="startTime">Start Time *</label>
-                            <input 
-                                id="startTime"
-                                type="time"
-                                value={formData.startTime}
-                                onChange={(e) => handleInputChange("startTime", e.target.value)}
-                                required
-                                className="input"
-                            />  
+                    {/* meeting times */}
+                    <div className="meeting-times-section">
+                        <div className="meeting-times-header">
+                            <label className="section-label">Meeting Times *</label>
+                            <button type="button" className="btn btn-outline btn-sm" onClick={addMeetingTime}>+ Add Meeting Time</button>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="endTime">End Time *</label>
-                            <input 
-                                id="endTime"
-                                type="time"
-                                value={formData.endTime}
-                                onChange={(e) => handleInputChange("endTime", e.target.value)}
-                                required
-                                className="input"
-                            />  
-                        </div>
+                        {formData.meetingTimes.map((meetingTime, index) => (
+                            <div key={index} className="meeting-time-row">
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Day of Week</label>
+                                        <select
+                                            value={meetingTime.dayOfWeek}
+                                            onChange={(e) => handleMeetingTimeChange(index, "dayOfWeek", e.target.value)}
+                                            className="select"
+                                        >
+                                           {DAYS_OF_WEEK.map((day) => (
+                                                <option key={day.value} value={day.value}>
+                                                    {day.label}
+                                                </option>
+                                           ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Start Time</label>
+                                        <input 
+                                            type="time"
+                                            value={meetingTime.startTime}
+                                            onChange={(e) => handleMeetingTimeChange(index, "startTime", e.target.value)}
+                                            required
+                                            className="input"
+                                        />  
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>End Time</label>
+                                        <input 
+                                            type="time"
+                                            value={meetingTime.endTime}
+                                            onChange={(e) => handleMeetingTimeChange(index, "endTime", e.target.value)}
+                                            required
+                                            className="input"
+                                        />  
+                                    </div>
+                                    
+                                    {formData.meetingTimes.length > 1 && (
+                                        <div className="form-group">
+                                            <label>&nbsp;</label>
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline btn-sm remove-btn"
+                                                onClick={() => removeMeetingTime(index)}
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                     </div>
 
+                    {/* section, type */}
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="section">Section</label>
@@ -163,6 +223,7 @@ function CourseInputForm({ onAddCourse, onUpdateCourse, editingCourse, setEditin
                         </div>
                     </div>
 
+                    {/* instructor, building/room */}
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="instructor">Instructor</label>

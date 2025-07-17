@@ -16,14 +16,16 @@ function EmailScheduleModal({ onClose, schedule, term }) {
         }
 
         const scheduleText = schedule.schedule.courses.map((course) => {
-        return `${course.courseCode}${course.section ? ` (${course.section})` : ""} 
-        - ${formatTime(course.startTime)} to ${formatTime(course.endTime)}${course.location ? 
-        ` at ${course.location}` : ""}${course.instructor ? ` with ${course.instructor}` : ""}`
+            const meetingTimesText = course.meetingTimes.map((mt) => `${mt.dayOfWeek} ${formatTime(mt.startTime)}-${formatTime(mt.endTime)}`)
+            .join(", ")
+
+            return `${course.courseCode}${course.section ? ` (${course.section})` : ""}: 
+            ${meetingTimesText}${course.location ? ` at ${course.location}` : ""}${course.instructor ? ` with ${course.instructor}` : ""}`
         })
         .join("\n")
 
         const subject = `My ${term} Course Schedule - Queen's University`
-        const body = `Here's my course schedule for the ${term} term,
+        const body = `Here's my weekly course schedule for the ${term} term,
         
         ${scheduleText}
         
@@ -47,7 +49,7 @@ function EmailScheduleModal({ onClose, schedule, term }) {
                 
                 <div className="modal-body">
                     <p className="modal-description">
-                        Send this schedule to an email address. This will open your default email client.
+                        Send this weekly schedule to an email address. This will open your default email client.
                     </p>
                     <div className="form-group">
                         <label htmlFor="email">Email Address</label>

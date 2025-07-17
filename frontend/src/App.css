@@ -318,6 +318,41 @@ body {
   cursor: pointer;
 }
 
+/* Meeting Times Section */
+.meeting-times-section {
+  margin-bottom: 1rem;
+}
+
+.meeting-times-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-label {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.meeting-time-row {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.remove-btn {
+  background-color: #ef4444 !important;
+  color: white !important;
+  border-color: #ef4444 !important;
+}
+
+.remove-btn:hover {
+  background-color: #dc2626 !important;
+}
+
 /* Buttons */
 .btn {
   padding: 0.75rem 1.5rem;
@@ -425,14 +460,24 @@ body {
 
 .detail-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.25rem;
   font-size: 0.875rem;
   color: #64748b;
 }
 
+.meeting-times {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.meeting-time {
+  white-space: nowrap;
+}
+
 .icon {
   font-size: 1rem;
+  margin-top: 0.1rem;
 }
 
 .course-actions {
@@ -540,7 +585,7 @@ body {
 .schedules-grid {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .schedule-card {
@@ -574,33 +619,102 @@ body {
   gap: 0.5rem;
 }
 
-.schedule-content {
+/* Calendar Styles */
+.calendar-container {
   padding: 1rem;
 }
 
-.schedule-course {
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.5rem;
+.calendar-event {
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.event-title {
+  font-weight: 600;
+  margin-bottom: 1px;
+}
+
+.event-type,
+.event-location,
+.event-instructor {
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+/* Course Legend */
+.course-legend {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
   background-color: #f8fafc;
+}
+
+.course-legend h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
   margin-bottom: 0.75rem;
+  color: #374151;
 }
 
-.schedule-course:last-child {
-  margin-bottom: 0;
-}
-
-.course-title-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.course-details-row {
+.legend-items {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.legend-text {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.legend-mandatory {
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+/* React Big Calendar Overrides */
+.rbc-calendar {
+  font-family: inherit;
+}
+
+.rbc-time-view .rbc-time-gutter {
+  font-size: 12px;
+}
+
+.rbc-time-slot {
+  border-top: 1px solid #e2e8f0;
+}
+
+.rbc-timeslot-group {
+  border-bottom: 1px solid #d1d5db;
+}
+
+.rbc-time-header-content {
+  border-left: 1px solid #e2e8f0;
+}
+
+.rbc-time-content {
+  border-top: 1px solid #d1d5db;
+}
+
+.rbc-event {
+  border-radius: 3px;
+  padding: 2px 4px;
+}
+
+.rbc-event-content {
+  font-size: 11px;
 }
 
 /* Modal */
@@ -751,5 +865,20 @@ body {
 
   .layout-grid {
     grid-template-columns: 1fr;
+  }
+
+  .meeting-times-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .legend-items {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .calendar-container {
+    overflow-x: auto;
   }
 }

@@ -3,13 +3,30 @@ function timeToMinutes(time) {
     return hours * 60 + minutes
 }
 
-function hasTimeConflict(course1, course2) {
-    start1 = timeToMinutes(course1.startTime)
-    end1 = timeToMinutes(course1.endTime)
-    start2 = timeToMinutes(course2.startTime)
-    end2 = timeToMinutes(course2.endTime)
+function hasTimeConflict(meeting1, meeting2) {
+    // only check conflict if meetings are on the same day
+    if (meeting1.dayOfWeek !== meeting2.dayOfWeek) {
+        return false
+    }
+
+    const start1 = timeToMinutes(meeting1.startTime)
+    const end1 = timeToMinutes(meeting1.endTime)
+    const start2 = timeToMinutes(meeting2.startTime)
+    const end2 = timeToMinutes(meeting2.endTime)
 
     return !(end1 <= start2 || end2 <= start1)
+}
+
+function hasCoursesConflict(course1, course2) {
+    // check if any meeting time of course1 conflicts with any meeting time of course2
+    for (const meeting1 of course1.meetingTimes) {
+        for (const meeting2 of course2.meetingTimes) {
+            if (hasTimeConflict(meeting1, meeting2)) {
+                return true
+            }
+        }
+    }
+    return false       
 }
 
 function generateCombinations(courses, count) {
@@ -32,9 +49,10 @@ function generateCombinations(courses, count) {
 }
 
 function validateSchedule(courses) {
+    // check if any two courses have conflicting meeting times
     for (let i = 0; i < courses.length; i++) {
         for (let j = i + 1; j < courses.length; j++) {
-            if (hasTimeConflict(courses[i], courses[j])) {
+            if (hasCoursesConflict(courses[i], courses[j])) {
                 return false
             }
         }
@@ -176,5 +194,6 @@ module.exports = {
     generateSchedules,
     timeToMinutes,
     hasTimeConflict,
+    hasCoursesConflict,
     validateSchedule,
   }

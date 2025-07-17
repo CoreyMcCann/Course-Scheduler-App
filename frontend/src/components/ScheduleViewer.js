@@ -1,4 +1,4 @@
-import ScheduleGrid from "./ScheduleGrid"
+import WeeklyCalendar from "./WeeklyCalendar"
 
 function ScheduleViewer({
   schedules,
@@ -16,7 +16,7 @@ function ScheduleViewer({
       <div className="card-header">
         <div className="schedule-header">
           <div>
-            <h2 className="card-title">✅ Generated {courseCount}-Course Schedules</h2>
+            <h2 className="card-title">✅ Generated {courseCount}-Course Weekly Schedules</h2>
             <p className="card-description">
               Found {schedules.length} valid {courseCount}-course schedule{schedules.length !== 1 ? "s" : ""} for {term}{" "}
               term
@@ -35,7 +35,7 @@ function ScheduleViewer({
       <div className="card-content">
         <div className="schedules-grid">
           {schedules.map((schedule, index) => (
-            <ScheduleGrid
+            <WeeklyCalendar
               key={index}
               schedule={schedule}
               scheduleIndex={index}

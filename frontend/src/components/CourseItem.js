@@ -7,6 +7,10 @@ function CourseItem({ course, onEdit, onDelete }) {
         return `${displayHour}:${minutes} ${ampm}`
     }
 
+    const formatMeetingTime = (meetingTime) => {
+        return `${meetingTime.dayOfWeek} ${formatTime(meetingTime.startTime)}-${formatTime(meetingTime.endTime)}`
+    }
+
     return (
         <div className="course-item">
             <div className="course-info">
@@ -20,7 +24,14 @@ function CourseItem({ course, onEdit, onDelete }) {
                 <div className="course-details">
                     <div className="detail-item">
                         <span className="icon">🕒</span>
-                        {formatTime(course.startTime)} - {formatTime(course.endTime)}
+                        <div className="meeting-times">
+                            {course.meetingTimes.map((meetingTime, index) => (
+                                <span key={index} className="meeting-time">
+                                    {formatMeetingTime(meetingTime)}
+                                    {index < course.meetingTimes.length - 1 && ", "}
+                                </span>
+                            ))}
+                        </div>
                     </div>
                     {course.instructor && (
                         <div className="detail-item">
