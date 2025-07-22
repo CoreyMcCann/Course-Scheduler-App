@@ -56,20 +56,39 @@ function WeeklyCalendar({ schedule, scheduleIndex, isFavorite, onToggleFavorite,
         backgroundColor: event.resource.color,
         borderColor: event.resource.color,
         color: "white",
-        fontSize: "12px",
+        fontSize: "11px",
         padding: "2px 4px",
+        lineHeight: "1.1",
       },
     }
   }
 
-  const CustomEvent = ({ event }) => (
-    <div className="calendar-event">
-      <div className="event-title">{event.title}</div>
-      {event.resource.type && <div className="event-type">{event.resource.type}</div>}
-      {event.resource.location && <div className="event-location">{event.resource.location}</div>}
-      {event.resource.instructor && <div className="event-instructor">{event.resource.instructor}</div>}
-    </div>
-  )
+  const CustomEvent = ({ event }) => {
+    // create compact display with all info on fewer lines
+    const parts = []
+
+    // Line 1: course code and section
+    parts.push(event.title)
+
+    // Line 2: type and location if both exist
+    const line2Parts = []
+    if (event.resource.type) line2Parts.push(event.resource.type)
+    if (event.resource.location) line2Parts.push(event.resource.location)
+    if (line2Parts.length > 0)  parts.push(line2Parts.join(" • "))
+
+    // Line 3: instructor if it exists
+    // if (event.resource.instructor) parts.push(event.resource.instructor)
+    
+    return (
+      <div className="calendar-event-compact">
+        {parts.map((part, index) => (
+          <div key={index} className="event-line">
+            {part}
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div className={`schedule-card ${isFavorite ? "favorite" : ""}`}>
@@ -120,6 +139,9 @@ function WeeklyCalendar({ schedule, scheduleIndex, isFavorite, onToggleFavorite,
                 {course.courseCode}
                 {course.section && ` (${course.section})`}
                 {course.mandatory && <span className="legend-mandatory"> - Mandatory</span>}
+                {course.type && ` - ${course.type}`}
+                {course.instructor && ` with ${course.instructor}`}
+                {course.location && ` at ${course.location}`}
               </span>
             </div>
           ))}
