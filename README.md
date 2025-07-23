@@ -30,13 +30,13 @@ The scheduler includes sophisticated handling for mandatory courses:
 ## Usage Instructions
 
 ### Step 1: Course Selection Setup
-![Course Selection Form](documentation/course-selection.png)
+![Course Selection Form](documentation/screenshots/course-selection.png)
 
 1. **Choose your term**: Select Fall or Winter term from the dropdown
 2. **Set course count**: Choose how many courses you want in each generated schedule (2-7 courses)
 
 ### Step 2: Add Your Courses
-![Course Input Form](documentation/course-input.png)
+![Course Input Form](documentation/screenshots/course-input.png)
 
 1. **Enter course code** (required): e.g., "COMP 206", "MATH 121"
 2. **Add meeting times** (required): 
@@ -52,7 +52,7 @@ The scheduler includes sophisticated handling for mandatory courses:
 5. Click **"Add Course"** to save
 
 ### Step 3: Manage Your Course List
-![Added Courses List](documentation/course-list.png)
+![Added Courses List](documentation/screenshots/course-list.png)
 
 - **View all added courses** with their meeting times and details
 - **Edit courses**: Click the ✏️ button to modify any course
@@ -65,17 +65,20 @@ The scheduler includes sophisticated handling for mandatory courses:
 3. **Scroll down** to see your generated weekly schedules
 
 ### Step 5: Review and Organize Results
-![Generated Weekly Schedule](documentation/weekly-schedule.png)
+![Generated Weekly Schedule](documentation/screenshots/weekly-schedule.png)
 
 - **Browse schedules**: Each shows a full weekly calendar view
 - **Mark favorites**: Click the heart button on schedules you prefer
 - **Email schedules**: Send schedules to yourself for reference during enrollment
 - **Use the legend**: Each schedule includes a color-coded course legend
 
-## Screenshots
+### Step 6: Click the Email Icon Next to a Generated Schedule
+![Generated Weekly Schedule](documentation/screenshots/email-modal.png)
+
+- **Email schedules**: Send schedules to yourself for reference during enrollment
 
 ### Full Application Layout
-![Full App Layout](documentation/full-app.png)
+![Full App Layout](documentation/screenshots/full-app.png)
 
 The application uses a two-column layout with input forms on the left and course management on the right, followed by full-width schedule results below.
 
@@ -88,53 +91,53 @@ The application uses a two-column layout with input forms on the left and course
 ### Installation
 
 1. **Clone the repository**
-   \`\`\`bash
+   ```bash
    git clone <repository-url>
    cd queens-course-scheduler
-   \`\`\`
+   ```
 
 2. **Install backend dependencies**
-   \`\`\`bash
+   ```bash
    cd backend
    npm install
-   \`\`\`
+   ```
 
 3. **Install frontend dependencies**
-   \`\`\`bash
+   ```bash
    cd ../frontend
    npm install
-   \`\`\`
+   ```
 
 ### Running in Development
 
 1. **Start the backend server**
-   \`\`\`bash
+   ```bash
    cd backend
    npm run dev
-   \`\`\`
+   ```
    The API server will run on http://localhost:5001
 
 2. **Start the frontend development server** (in a new terminal)
-   \`\`\`bash
+   ```bash
    cd frontend
    npm start
-   \`\`\`
+   ```
    The React app will run on http://localhost:3000
 
 ### Environment Variables
 
 Create a `.env` file in the frontend directory if you need to customize the API URL:
 
-\`\`\`env
+```env
 REACT_APP_API_URL=http://localhost:5001/api
-\`\`\`
+```
 
 The backend uses default settings but you can create a `.env` file in the backend directory for custom configuration:
 
-\`\`\`env
-PORT=5000
+```env
+PORT=5001
 NODE_ENV=development
-\`\`\`
+```
 
 ## Tips for Effective Use
 
